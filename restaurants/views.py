@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from .models import Restaurant, Favorite
 from .serializers import RestaurantSerializer, FavoriteSerializer
 
+def landing(request):
+    return render(request, "landing.html")
+
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
