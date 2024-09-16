@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Restaurant exploration website">
-    <link href="../static/landing.css" type = "text/css" rel="stylesheet">
+    <link href="../static/landing.css" type="text/css" rel="stylesheet">
     <title>Restaurant Explorer</title>
-    
+
     <style>
         /* General styles for the page */
         body, html {
@@ -22,11 +22,54 @@
             color: white;
             text-align: center;
             padding: 20px;
+            position: relative; /* For positioning the login and search forms */
         }
 
         header h1 {
             margin: 0;
             font-size: 2.5em;
+        }
+
+        /* Style for the login form */
+        #login-form {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        #login-form input[type="text"],
+        #login-form input[type="password"] {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 1em;
+        }
+
+        #login-form button {
+            padding: 5px 10px;
+            background-color: gold;
+            border: none;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        /* Style for the search form */
+        #search-form {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        #search-form input[type="text"] {
+            padding: 5px;
+            font-size: 1em;
+        }
+
+        #search-form button {
+            padding: 5px 10px;
+            background-color: gold;
+            border: none;
+            font-size: 1em;
+            cursor: pointer;
         }
 
         #map {
@@ -55,6 +98,19 @@
     <header>
         <h1>Atlanta Food Finder</h1>
         <p>Discover new tastes or cozy up with an old favorite!</p>
+
+        <!-- Login Form in the Top Right -->
+        <form id="login-form" action="/login/" method="post">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Restaurant Search Form in the Top Left -->
+        <form id="search-form" action="/search/" method="get">
+            <input type="text" name="search_query" placeholder="Search restaurants" required>
+            <button type="submit">Search</button>
+        </form>
     </header>
 
     <!-- Map Section -->
