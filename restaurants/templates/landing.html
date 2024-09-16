@@ -128,13 +128,20 @@
         }
 
         // Function to create markers for restaurants
+        const cuisineTypes = [
+            "Italian", "Chinese", "Japanese", "Thai", "Indian", "Mexican", "Korean",
+            "French", "Spanish", "Greek", "Turkish", "Vietnamese", "American", "Brazilian",
+            "Peruvian", "Argentinian", "German", "Russian", "Lebanese", "Moroccan", "Ethiopian",
+            "Vegetarian", "Vegan", "Seafood", "Steakhouse", "Barbecue", "Pizza", "Sushi",
+            "Burger", "Sandwich", "Salad", "Soup", "Noodle", "Curry", "Tapas", "Dessert"
+        ];
+
         function createRestaurantMarker(place) {
             const marker = new google.maps.Marker({
                 map: map,
                 position: place.geometry.location,
                 title: place.name
             });
-
 
             service.getDetails({ placeId: place.place_id }, function(details, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -143,15 +150,19 @@
                     // Convert rating to stars (out of 5)
                     const rating = details.rating || 0;
                     const fullStars = Math.floor(rating);
-                    const halfStar = rating % 1 >= 0.5 ? '★' : '';  // Half star if rating has a decimal part
+                    const halfStar = rating % 1 >= 0.5 ? '★' : '';
                     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
                     const starRating = '★'.repeat(fullStars) + halfStar + '☆'.repeat(emptyStars);
+
+                    // Determine cuisine type
+                    let cuisine = determineCuisine(details);
+
                     const contentString = `
                         <strong>${details.name}</strong><br>
                         Rating: ${starRating} (${rating})<br>
                         Address: ${details.formatted_address || 'N/A'}<br>
                         Phone: ${details.formatted_phone_number || 'N/A'}<br>
-                        Cuisine: ${details.types.includes('restaurant') ? 'Restaurant' : 'N/A'}<br>
+                        Cuisine: ${cuisine}<br>
                         ${photoUrl ? `<img src="${photoUrl}" alt="${details.name}" style="max-width:100%; height:auto;"><br>` : ''}
                         <a href="${details.url}" target="_blank">Google Reviews</a>
                     `;
@@ -163,6 +174,58 @@
                     });
                 }
             });
+        }
+
+        function determineCuisine(details) {
+            // Check if there's a cuisine type in the types array
+            for (let type of details.types) {
+                const formattedType = type.replace(/_/g, ' ').toLowerCase();
+                for (let cuisine of cuisineTypes) {
+                    if (formattedType.includes(cuisine.toLowerCase())) {
+                        return cuisine;
+                    }
+                }
+            }
+
+            // Check if there's a cuisine type in the name
+            for (let cuisine of cuisineTypes) {
+                if (details.name.toLowerCase().includes(cuisine.toLowerCase())) {
+                    return cuisine;
+                }
+            }
+
+            // Check if there's a cuisine type in the reviews
+            if (details.reviews) {
+                for (let review of details.reviews) {
+                    for (let cuisine of cuisineTypes) {
+                        if (review.text.toLowerCase().includes(cuisine.toLowerCase())) {
+                            return cuisine;
+                        }
+                    }
+                }
+            }
+
+            // If no specific cuisine is found, return a generic type
+            return determineGenericType(details.types) || 'Restaurant';
+        }
+
+        function determineGenericType(types) {
+            const genericTypes = {
+                'cafe': 'Cafe',
+                'bakery': 'Bakery',
+                'bar': 'Bar',
+                'night_club': 'Night Club',
+                'food': 'Food',
+                'restaurant': 'Restaurant'
+            };
+
+            for (let type of types) {
+                if (genericTypes[type]) {
+                    return genericTypes[type];
+                }
+            }
+
+            return null;
         }
 
         // Handle location errors
