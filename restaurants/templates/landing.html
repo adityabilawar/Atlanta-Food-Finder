@@ -110,7 +110,7 @@
         function searchNearbyRestaurants(location) {
             const request = {
                 location: location,
-                radius: '3000',  // Search radius in meters (3.0km)
+                radius: '1500',  // Search radius in meters (1.5km)
                 type: ['restaurant']  // Restaurant type
             };
 
@@ -135,10 +135,33 @@
                 title: place.name
             });
 
-            // Add click listener to show restaurant info when marker is clicked
-            google.maps.event.addListener(marker, 'click', function() {
-                infoWindow.setContent(`<strong>${place.name}</strong><br>Rating: ${place.rating || 'N/A'}</strong><br>Price Level: ${place.price_level || 'N/A'}`);
-                infoWindow.open(map, this);
+
+            service.getDetails({ placeId: place.place_id }, function(details, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    const photoUrl = details.photos ? details.photos[0].getUrl({ maxWidth: 200 }) : '';
+
+                    // Convert rating to stars (out of 5)
+                    const rating = details.rating || 0;
+                    const fullStars = Math.floor(rating);
+                    const halfStar = rating % 1 >= 0.5 ? '★' : '';  // Half star if rating has a decimal part
+                    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                    const starRating = '★'.repeat(fullStars) + halfStar + '☆'.repeat(emptyStars);
+                    const contentString = `
+                        <strong>${details.name}</strong><br>
+                        Rating: ${starRating} (${rating})<br>
+                        Address: ${details.formatted_address || 'N/A'}<br>
+                        Phone: ${details.formatted_phone_number || 'N/A'}<br>
+                        Cuisine: ${details.types.includes('restaurant') ? 'Restaurant' : 'N/A'}<br>
+                        ${photoUrl ? `<img src="${photoUrl}" alt="${details.name}" style="max-width:100%; height:auto;"><br>` : ''}
+                        <a href="${details.url}" target="_blank">Google Reviews</a>
+                    `;
+
+                    // Add click listener to show restaurant info when marker is clicked
+                    google.maps.event.addListener(marker, 'click', function() {
+                        infoWindow.setContent(contentString);
+                        infoWindow.open(map, this);
+                    });
+                }
             });
         }
 
@@ -153,7 +176,7 @@
 
     <!-- Load the Google Maps API and Places API -->
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=KEY_HERE&libraries=places&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLhkzfJDTflZZoU0SCz_lM6F7sm8vN3HM&libraries=places&callback=initMap">
     </script>
 
 </body>
