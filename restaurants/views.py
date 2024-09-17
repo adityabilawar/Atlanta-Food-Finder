@@ -8,6 +8,12 @@ from .serializers import RestaurantSerializer, FavoriteSerializer
 def landing(request):
     return render(request, "landing.html")
 
+def register(request):
+    return render(request, "register.html")
+
+def forgot_password(request):
+    return render(request, "forgot-password.html")
+
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
