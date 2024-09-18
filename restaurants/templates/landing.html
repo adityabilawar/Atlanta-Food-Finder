@@ -120,8 +120,7 @@
         <p>Discover new tastes or cozy up with an old favorite!</p>
 
         <!-- Login Form in the Top Right -->
-        <!-- NEED TO MAKE THIS FUNCTION LOOP THROUGH EXISTING USERS SEARCHING FOR A NAME MATCH AND LOAD FAVORITES -->
-        <form id="login-form" action="" method="post">
+        <form id="login-form" action="/login/" method="post">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
@@ -129,9 +128,8 @@
         </form>
 
         <!-- Restaurant Search Form in the Top Left -->
-        <!-- NEED TO MAKE THIS FUNCTION LOOP THROUGH EXISTING RESTAURANTS SEARCHING FOR A NAME MATCH -->
-        <form id="search-form" action="" method="get">
-            <input type="text" name="search_query" placeholder="Search Restaurants" required>
+        <form id="search-form" onsubmit="searchRestaurants(event)">
+            <input type="text" id="search-input" name="search_query" placeholder="Search Restaurants" required>
             <button type="submit">Search</button>
         </form>
     </header>
@@ -142,13 +140,13 @@
 
     <!-- Footer Section -->
     <footer>
-        <p>&copy; <a href="/about" style="color: deepskyblue; text-decoration: underline;">2340 Group 44</a>. All rights reserved.</p>
+        <p>&copy; 2340 Group 44. All rights reserved.</p>
     </footer>
-
 
     <!-- Google Maps API and Places API Scripts -->
     <script>
         let map, infoWindow, service;
+        let markers = [];
 
         function initMap() {
             // Create the map
@@ -222,6 +220,8 @@
                 position: place.geometry.location,
                 title: place.name
             });
+
+            markers.push(marker);
 
             service.getDetails({ placeId: place.place_id }, function(details, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -314,6 +314,38 @@
                 ? 'Error: The geolocation service failed.'
                 : 'Error: Your browser doesn\'t support geolocation.';
             map.setCenter(pos);
+        }
+
+        function searchRestaurants(event) {
+            event.preventDefault();
+            const query = document.getElementById('search-input').value;
+
+            const request = {
+                query: query,
+                fields: ['name', 'geometry', 'place_id']
+            };
+
+            service.textSearch(request, function(results, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    clearMarkers();
+                    for (let i = 0; i < results.length; i++) {
+                        createRestaurantMarker(results[i]);
+                    }
+                    if (results.length > 0) {
+                        map.setCenter(results[0].geometry.location);
+                    }
+                    document.getElementById('status').textContent = `Found ${results.length} restaurants matching "${query}"`;
+                } else {
+                    document.getElementById('status').textContent = 'No restaurants found matching your search.';
+                }
+            });
+        }
+
+        function clearMarkers() {
+            for (let marker of markers) {
+                marker.setMap(null);
+            }
+            markers = [];
         }
     </script>
 
