@@ -215,6 +215,12 @@
         ];
 
         function createRestaurantMarker(place) {
+            // Check if the place is actually a restaurant
+            if (!place.types || !place.types.includes('restaurant')) {
+                console.log('Skipping non-restaurant result:', place.name);
+                return;  // Skip this result if it's not a restaurant
+            }
+
             const marker = new google.maps.Marker({
                 map: map,
                 position: place.geometry.location,
@@ -322,6 +328,7 @@
 
             const request = {
                 query: query,
+                type: ['restaurant'],  // This restricts the search to only restaurants
                 fields: ['name', 'geometry', 'place_id']
             };
 
@@ -333,6 +340,7 @@
                     }
                     if (results.length > 0) {
                         map.setCenter(results[0].geometry.location);
+                        map.setZoom(13);  // Adjust zoom level to show multiple results
                     }
                     document.getElementById('status').textContent = `Found ${results.length} restaurants matching "${query}"`;
                 } else {
