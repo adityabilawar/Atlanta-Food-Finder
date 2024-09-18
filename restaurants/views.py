@@ -8,6 +8,9 @@ from .serializers import RestaurantSerializer, FavoriteSerializer
 def landing(request):
     return render(request, "landing.html")
 
+def about(request):
+    return render(request, "about.html")
+
 def register(request):
     return render(request, "register.html")
 
