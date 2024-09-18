@@ -140,8 +140,9 @@
 
     <!-- Footer Section -->
     <footer>
-        <p>&copy; 2340 Group 44. All rights reserved.</p>
+        <p>&copy; <a href="/about" style="color: deepskyblue; text-decoration: underline;">2340 Group 44</a>. All rights reserved.</p>
     </footer>
+
 
     <!-- Google Maps API and Places API Scripts -->
     <script>
@@ -341,6 +342,7 @@
                     if (results.length > 0) {
                         map.setCenter(results[0].geometry.location);
                         map.setZoom(13);  // Adjust zoom level to show multiple results
+                        map.event.trigger('click')
                     }
                     document.getElementById('status').textContent = `Found ${results.length} restaurants matching "${query}"`;
                 } else {
