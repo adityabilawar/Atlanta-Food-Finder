@@ -151,30 +151,34 @@
         </form>
 
         <!-- Restaurant Search Form and Filters in the Top Left -->
-        <div id="search-container">
-            <form id="search-form" onsubmit="searchRestaurants(event)">
-                <input type="text" id="search-input" name="search_query" placeholder="Search Restaurants" required>
-                <button type="submit">Search</button>
-            </form>
-            <div id="filter-options">
-                <label for="rating-filter">Minimum Rating:</label>
-                <select id="rating-filter">
-                    <option value="0">Any</option>
-                    <option value="3">3+ stars</option>
-                    <option value="4">4+ stars</option>
-                    <option value="4.5">4.5+ stars</option>
-                </select>
-
-                <label for="distance-filter">Maximum Distance:</label>
-                <select id="distance-filter">
-                    <option value="0">Any</option>
-                    <option value="1000">1 km</option>
-                    <option value="5000">5 km</option>
-                    <option value="10000">10 km</option>
-                    <option value="20000">20 km</option>
-                </select>
-            </div>
+<div id="search-container">
+    <form id="search-form" onsubmit="searchRestaurants(event)">
+        <input type="text" id="search-input" name="search_query" placeholder="Search Restaurants" required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="filter-options">
+        <div class="filter-option">
+            <label for="rating-filter">Rating:</label>
+            <select id="rating-filter">
+                <option value="0">Any</option>
+                <option value="3">3+ stars</option>
+                <option value="4">4+ stars</option>
+                <option value="4.5">4.5+ stars</option>
+            </select>
         </div>
+        <div class="filter-option">
+            <label for="distance-filter">Distance:</label>
+            <select id="distance-filter">
+                <option value="0">Any</option>
+                <option value="1000">1 km</option>
+                <option value="5000">5 km</option>
+                <option value="10000">10 km</option>
+                <option value="20000">20 km</option>
+            </select>
+        </div>
+    </div>
+</div>
+
     </header>
 
     <!-- Map Section -->
