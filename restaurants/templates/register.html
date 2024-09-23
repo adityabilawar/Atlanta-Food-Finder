@@ -72,25 +72,35 @@
     <div class="container">
         <h1>Register New Account</h1>
         <p>Hello,</p>
-        <p>To create a new account, please fill out the form below:</p>
+        <p>To create a new account, please sign in with google:</p>
         <!-- NEED TO ADD INFORMATION TO DATABASE ON SUBMISSION -->
-        <form onclick="????" method="post">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email Address:</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email address" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Register">
-            </div>
-        </form>
+{#        <form onclick="????" method="post">#}
+{#            <div class="form-group">#}
+{#                <label for="username">Username:</label>#}
+{#                <input type="text" id="username" name="username" placeholder="Enter your username" required>#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#                <label for="email">Email Address:</label>#}
+{#                <input type="email" id="email" name="email" placeholder="Enter your email address" required>#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#                <label for="password">Password:</label>#}
+{#                <input type="password" id="password" name="password" placeholder="Enter your password" required>#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#                <input type="submit" value="Register">#}
+{#            </div>#}
+{#        </form>#}
+            <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+        <script> function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}</script>
+
         <div class="footer">
             <p>&copy; [2024] [2340 Group 44]. All rights reserved.</p>
         </div>

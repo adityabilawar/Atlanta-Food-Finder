@@ -143,10 +143,30 @@
         <p>Discover new tastes or cozy up with an old favorite!</p>
 
         <!-- Login Form in the Top Right -->
+
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
         <form id="login-form" action="/login/" method="post">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+             <script> function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}</script>
+<a href="#" onclick="signOut();">Sign out</a>
+<script>
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
+{#            <input type="text" name="username" placeholder="Username" required>#}
+{#            <input type="password" name="password" placeholder="Password" required>#}
+{#            <button type="submit">Login</button>#}
             <a href="/register/">New User?</a><a href="/forgot-password/">Forgot Password?</a>
         </form>
 
