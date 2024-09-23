@@ -322,11 +322,61 @@
         }
 
         function determineCuisine(details) {
-            // ... (keep existing determineCuisine function) ...
+            // Check if there's a cuisine type in the types array
+            if (details.types) {
+                for (let type of details.types) {
+                    const formattedType = type.replace(/_/g, ' ').toLowerCase();
+                    for (let cuisine of cuisineTypes) {
+                        if (formattedType.includes(cuisine.toLowerCase())) {
+                            return cuisine;
+                        }
+                    }
+                }
+            }
+
+            // Check if there's a cuisine type in the name
+            if (details.name) {
+                for (let cuisine of cuisineTypes) {
+                    if (details.name.toLowerCase().includes(cuisine.toLowerCase())) {
+                        return cuisine;
+                    }
+                }
+            }
+
+            // Check if there's a cuisine type in the reviews
+            if (details.reviews && details.reviews.length > 0) {
+                for (let review of details.reviews) {
+                    for (let cuisine of cuisineTypes) {
+                        if (review.text.toLowerCase().includes(cuisine.toLowerCase())) {
+                            return cuisine;
+                        }
+                    }
+                }
+            }
+
+            // If no specific cuisine is found, return a generic type
+            return determineGenericType(details.types) || 'Various';
         }
 
         function determineGenericType(types) {
-            // ... (keep existing determineGenericType function) ...
+            if (!types) return null;
+
+            const genericTypes = {
+                'cafe': 'Cafe',
+                'bakery': 'Bakery',
+                'bar': 'Bar',
+                'night_club': 'Night Club',
+                'food': 'Food',
+                'restaurant': 'Restaurant'
+            };
+
+            for (let type of types) {
+                if (genericTypes[type]) {
+                    return genericTypes[type];
+                }
+            }
+
+            return null;
         }
 
         // Handle location errors
