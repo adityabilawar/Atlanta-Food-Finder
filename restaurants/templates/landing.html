@@ -134,6 +134,8 @@
             color: white;
         }
     </style>
+    <meta name="google-signin-client_id" content="659442380795-0pkepjreldf5dhjml3l1qpot25bmko5r.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
 
@@ -144,31 +146,11 @@
 
         <!-- Login Form in the Top Right -->
 
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
-        <meta name="google-signin-client_id" content="659442380795-0pkepjreldf5dhjml3l1qpot25bmko5r.apps.googleusercontent.com.apps.googleusercontent.com">
-        <form id="login-form" action="/login/" method="post">
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
-             <script> function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
-  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log('Name: ' + profile.getName());
-  console.log('Image URL: ' + profile.getImageUrl());
-  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-}</script>
-<a href="#" onclick="signOut();">Sign out</a>
-<script>
-  function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
-  }
-</script>
-{#            <input type="text" name="username" placeholder="Username" required>#}
-{#            <input type="password" name="password" placeholder="Password" required>#}
-{#            <button type="submit">Login</button>#}
-            <a href="/register/">New User?</a><a href="/forgot-password/">Forgot Password?</a>
-        </form>
+ <div id="login-container" style="position: absolute; top: 20px; right: 20px;">
+    <div id="my-signin2"></div>
+    <button id="signout-button" style="display: none;" onclick="signOut()">Sign Out</button>
+    <div id="user-info" style="display: none; color: white;"></div>
+</div>
 
         <!-- Restaurant Search Form and Filters in the Top Left -->
 <div id="search-container">
@@ -456,6 +438,55 @@
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLhkzfJDTflZZoU0SCz_lM6F7sm8vN3HM&libraries=places,geometry&callback=initMap">
     </script>
+
+<script>
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId());
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail());
+
+        // Update UI
+        document.getElementById('my-signin2').style.display = 'none';
+        document.getElementById('signout-button').style.display = 'block';
+        document.getElementById('user-info').style.display = 'block';
+        document.getElementById('user-info').innerHTML = 'Welcome, ' + profile.getName();
+
+        // You can send the ID token to your server here
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log('ID Token: ' + id_token);
+    }
+
+    function onFailure(error) {
+        console.log(error);
+    }
+
+    function renderButton() {
+        gapi.signin2.render('my-signin2', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onSignIn,
+            'onfailure': onFailure
+        });
+    }
+
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+            // Update UI
+            document.getElementById('my-signin2').style.display = 'block';
+            document.getElementById('signout-button').style.display = 'none';
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('user-info').innerHTML = '';
+        });
+    }
+</script>
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 
 </body>
 </html>
