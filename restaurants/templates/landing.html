@@ -303,6 +303,10 @@
                         distance = `Distance: ${(distanceInMeters / 1000).toFixed(2)} km<br>`;
                     }
 
+                    const directionsLink = place.geometry && place.geometry.location
+                        ? `<a href="https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${place.geometry.location.lat()},${place.geometry.location.lng()}" target="_blank">Get Directions</a>`
+                        : '';
+
                     const contentString = `
                         <strong>${details.name}</strong><br>
                         Rating: ${starRating} (${rating})<br>
@@ -311,7 +315,9 @@
                         Phone: ${details.formatted_phone_number || 'N/A'}<br>
                         Cuisine: ${cuisine}<br>
                         ${photoUrl ? `<img src="${photoUrl}" alt="${details.name}" style="max-width:100%; height:auto;"><br>` : ''}
-                        <a href="${details.url}" target="_blank">Google Reviews</a>
+                        <a href="${details.url}" target="_blank">Google Reviews</a><br>
+{#                        <a href="https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${place.geometry.location.lat()},${place.geometry.location.lng()}" target="_blank">Get Directions</a>#}
+                        ${directionsLink}
                     `;
 
                     // Add click listener to show restaurant info when marker is clicked
