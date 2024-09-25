@@ -155,7 +155,7 @@
         <!-- Restaurant Search Form and Filters in the Top Left -->
 <div id="search-container">
     <form id="search-form" onsubmit="searchRestaurants(event)">
-        <input type="text" id="search-input" name="search_query" placeholder="Search Restaurants" required>
+        <input type="text" id="search-input" name="search_query" placeholder="Search Restaurants">
         <button type="submit">Search</button>
     </form>
     <div id="filter-options">
@@ -390,25 +390,26 @@
         }
 
         function searchRestaurants(event) {
-            event.preventDefault();
-            const query = document.getElementById('search-input').value;
-            const ratingFilter = parseFloat(document.getElementById('rating-filter').value);
-            const distanceFilter = parseInt(document.getElementById('distance-filter').value);
+    event.preventDefault();
 
+    const query = document.getElementById('search-input').value.trim();
+    const ratingFilter = parseFloat(document.getElementById('rating-filter').value);
+    const distanceFilter = parseInt(document.getElementById('distance-filter').value);
+
+    // Clear any existing markers
+    clearMarkers();
+
+    // If the search query is empty, perform a nearby search based on location and distance
+    if (query === '') {
+        if (userLocation && distanceFilter > 0) {
             const request = {
-                query: query,
-                type: ['restaurant'],
-                fields: ['name', 'geometry', 'place_id', 'rating']
+                location: userLocation,
+                radius: distanceFilter,  // Use the distance filter for radius
+                type: ['restaurant']
             };
 
-            if (userLocation && distanceFilter > 0) {
-                request.location = userLocation;
-                request.radius = distanceFilter;
-            }
-
-            service.textSearch(request, function(results, status) {
+            service.nearbySearch(request, function(results, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    clearMarkers();
                     let filteredResults = results.filter(place => place.rating >= ratingFilter);
 
                     for (let i = 0; i < filteredResults.length; i++) {
@@ -419,12 +420,47 @@
                         map.setCenter(filteredResults[0].geometry.location);
                         map.setZoom(13);
                     }
-                    document.getElementById('status').textContent = `Found ${filteredResults.length} restaurants matching "${query}"`;
+                    document.getElementById('status').textContent = `Found ${filteredResults.length} restaurants within ${distanceFilter / 1000} km.`;
                 } else {
-                    document.getElementById('status').textContent = 'No restaurants found matching your search.';
+                    document.getElementById('status').textContent = 'No restaurants found within the specified distance.';
                 }
             });
+        } else {
+            document.getElementById('status').textContent = 'Please enable location or select a distance.';
         }
+    } else {
+        // If there's a search query, perform a text search
+        const request = {
+            query: query,
+            type: ['restaurant'],
+            fields: ['name', 'geometry', 'place_id', 'rating']
+        };
+
+        if (userLocation && distanceFilter > 0) {
+            request.location = userLocation;
+            request.radius = distanceFilter;
+        }
+
+        service.textSearch(request, function(results, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                let filteredResults = results.filter(place => place.rating >= ratingFilter);
+
+                for (let i = 0; i < filteredResults.length; i++) {
+                    createRestaurantMarker(filteredResults[i]);
+                }
+
+                if (filteredResults.length > 0) {
+                    map.setCenter(filteredResults[0].geometry.location);
+                    map.setZoom(13);
+                }
+                document.getElementById('status').textContent = `Found ${filteredResults.length} restaurants matching "${query}".`;
+            } else {
+                document.getElementById('status').textContent = 'No restaurants found matching your search.';
+            }
+        });
+    }
+}
+
 
         function clearMarkers() {
             for (let marker of markers) {
