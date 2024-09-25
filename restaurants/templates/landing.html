@@ -146,11 +146,13 @@
 
         <!-- Login Form in the Top Right -->
 
- <div id="login-container" style="position: absolute; top: 20px; right: 20px;">
-    <div id="my-signin2"></div>
-    <button id="signout-button" style="display: none;" onclick="signOut()">Sign Out</button>
-    <div id="user-info" style="display: none; color: white;"></div>
-</div>
+ <!-- Login Form in the Top Right -->
+        <div id="login-form">
+            <input type="text" placeholder="Username" id="username">
+            <input type="password" placeholder="Password" id="password">
+            <button type="button" onclick="login()">Login</button>
+            <p><a href="/register">New User?</a></p>
+        </div>
 
         <!-- Restaurant Search Form and Filters in the Top Left -->
 <div id="search-container">
