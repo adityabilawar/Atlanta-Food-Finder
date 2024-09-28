@@ -72,9 +72,7 @@
     <div class="container">
         <h1>Register New Account</h1>
         <p>Hello,</p>
-        <p>To create a new account, please sign in with google:</p>
-        <!-- NEED TO ADD INFORMATION TO DATABASE ON SUBMISSION -->
-        <form onclick="????" method="post">
+        <form id="registrationForm">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
@@ -91,15 +89,51 @@
                 <input type="submit" value="Register">
             </div>
         </form>
-            <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+        <script>
+            document.getElementById('registrationForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get form data
+                const _username = document.getElementById('username').value;
+                const _email = document.getElementById('email').value;
+                const _password = document.getElementById('password').value;
+
+                // Send data to Django backend
+                fetch('/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: _username,
+                        email: _email,
+                        password: _password
+                    })
+                })
+                .then(data => {
+                    // Handle success (e.g., show a message, redirect, etc.)
+                    django.contrib.auth.models.create_user(username=_username, email=_email, password=_password)
+                    alert('Registration successful!');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Registration failed. Please try again.');
+                });
+            });
+        </script>
+
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
         <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
-        <script> function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
-  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log('Name: ' + profile.getName());
-  console.log('Image URL: ' + profile.getImageUrl());
-  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-}</script>
+        <script>
+            function onSignIn(googleUser) {
+                var profile = googleUser.getBasicProfile();
+                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                console.log('Name: ' + profile.getName());
+                console.log('Image URL: ' + profile.getImageUrl());
+                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            }
+        </script>
 
         <div class="footer">
             <p>&copy; [2024] [2340 Group 44]. All rights reserved.</p>

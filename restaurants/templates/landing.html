@@ -146,13 +146,57 @@
 
         <!-- Login Form in the Top Right -->
 
- <!-- Login Form in the Top Right -->
-        <div id="login-form">
-            <input type="text" placeholder="Username" id="username">
-            <input type="password" placeholder="Password" id="password">
-            <button type="button" onclick="login()">Login</button>
-            <p><a href="/register">New User?</a></p>
-        </div>
+<!-- Login Form in the Top Right -->
+<div id="login-form">
+    <input type="text" placeholder="Username" id="username">
+    <input type="password" placeholder="Password" id="password">
+    <button type="button" onclick="login()">Login</button>
+    <p><a href="/register">New User?</a></p>
+</div>
+
+<script>
+    async function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Basic validation
+        if (!username || !password) {
+            alert("Please enter both username and password.");
+            return;
+        }
+
+        // Prepare the data to be sent
+        const data = {
+            username: username,
+            password: password
+        };
+
+        try {
+            const response = await fetch("{% url 'login' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                // Handle successful login
+                const result = await response.json();
+                alert("Login successful!");
+                // Optionally redirect or update UI here
+            } else {
+                // Handle login error
+                const error = await response.json();
+                alert("Login failed: User not found. Create an account.");
+            }
+        } catch (error) {
+            console.error("Error during login:", error);
+            alert("An error occurred. Please try again.");
+        }
+    }
+</script>
+
 
         <!-- Restaurant Search Form and Filters in the Top Left -->
 <div id="search-container">
