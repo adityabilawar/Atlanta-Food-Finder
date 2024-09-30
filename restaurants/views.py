@@ -4,6 +4,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Restaurant, Favorite
 from .serializers import RestaurantSerializer, FavoriteSerializer
+from django.contrib.auth import authenticate, login, logout
+import json
+from django.http import JsonResponse
 
 def landing(request):
     return render(request, "landing.html")
@@ -31,7 +34,7 @@ def register_view(request):
         return JsonResponse({'message': 'User created successfully'}, status=201)
 
     return JsonResponse({'message': 'Invalid request method'}, status=405)
-    
+
 def login_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)
