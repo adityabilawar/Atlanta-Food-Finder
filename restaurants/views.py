@@ -1,3 +1,13 @@
+# from django.shortcuts import render
+# from rest_framework import viewsets, filters
+# from rest_framework.decorators import action
+# from rest_framework.response import Response
+# from .models import Restaurant, Favorite
+# from .serializers import RestaurantSerializer, FavoriteSerializer
+# from django.contrib.auth import authenticate, login, logout
+# import json
+# from django.http import JsonResponse
+
 from django.shortcuts import render
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
@@ -5,6 +15,8 @@ from rest_framework.response import Response
 from .models import Restaurant, Favorite
 from .serializers import RestaurantSerializer, FavoriteSerializer
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 
@@ -20,33 +32,54 @@ def register(request):
 def forgot_password(request):
     return render(request, "forgot-password.html")
 
+@csrf_exempt
 def register_view(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        username = data.get('username')
-        email = data.get('email')
-        password = data.get('password')
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            email = data.get('email')
+            password = data.get('password')
 
-        if User.objects.filter(username=username).exists():
-            return JsonResponse({'message': 'Username already exists'}, status=400)
+            if not username or not email or not password:
+                return JsonResponse({'message': 'Please provide username, email, and password'}, status=400)
 
-        user = User.objects.create_user(username=username, email=email, password=password)
-        return JsonResponse({'message': 'User created successfully'}, status=201)
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'message': 'Username already exists'}, status=400)
+
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({'message': 'Email already exists'}, status=400)
+
+            user = User.objects.create_user(username=username, email=email, password=password)
+            return JsonResponse({'message': 'User created successfully'}, status=201)
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'message': str(e)}, status=500)
 
     return JsonResponse({'message': 'Invalid request method'}, status=405)
 
+@csrf_exempt
 def login_view(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        username = data.get('username')
-        password = data.get('password')
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'message': 'Login successful'}, status=200)
-        else:
-            return JsonResponse({'message': 'Invalid credentials'}, status=401)
+            if not username or not password:
+                return JsonResponse({'message': 'Please provide username and password'}, status=400)
+
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return JsonResponse({'message': 'Login successful'}, status=200)
+            else:
+                return JsonResponse({'message': 'Invalid credentials'}, status=401)
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'message': str(e)}, status=500)
 
     return JsonResponse({'message': 'Invalid request method'}, status=405)
 
