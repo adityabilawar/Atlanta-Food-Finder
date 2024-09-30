@@ -17,7 +17,6 @@ def register(request):
 def forgot_password(request):
     return render(request, "forgot-password.html")
 
-@csrf_exempt
 def register_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -32,8 +31,7 @@ def register_view(request):
         return JsonResponse({'message': 'User created successfully'}, status=201)
 
     return JsonResponse({'message': 'Invalid request method'}, status=405)
-
-@csrf_exempt
+    
 def login_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)
