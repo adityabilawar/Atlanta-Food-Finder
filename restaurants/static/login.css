@@ -1,0 +1,20 @@
+#login-form {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Optional: Align items to the left */
+}
+
+#login-inputs {
+    display: flex;
+    flex-direction: column; /* Stack inputs and button vertically */
+    gap: 3px; /* Space between items */
+}
+
+input {
+    width: 100%; /* Optional: Make inputs full width */
+    padding: 10px; /* Optional: Add padding for better usability */
+}
+
+button {
+    padding: 3px; /* Optional: Add padding for the button */
+}
