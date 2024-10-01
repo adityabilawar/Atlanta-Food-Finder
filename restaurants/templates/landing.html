@@ -227,6 +227,19 @@
         document.getElementById('user-info').style.display = 'block';
         document.getElementById('user-name').textContent = username;
         document.getElementById('sidebar-toggle').style.display = 'block'; // Show Favorites button
+        setUserFavoritesKey(username); // Set the user-specific favorites key
+        favorites = getFavorites(); // Load user's favorites
+        updateFavoritesList(); // Refresh the favorites list
+    }
+
+    let userFavoritesKey = ''
+
+    function setUserFavoritesKey(username) {
+        userFavoritesKey = `favorites_${username}`; // Unique key for the user's favorites
+    }
+
+    function getFavorites() {
+        return JSON.parse(localStorage.getItem(userFavoritesKey)) || {};
     }
 
     function logout() {
@@ -596,7 +609,6 @@
     }
 }
 
-
         function clearMarkers() {
             for (let marker of markers) {
                 marker.setMap(null);
@@ -605,10 +617,14 @@
         }
 
         // Favorites functionality
-        let favorites = JSON.parse(localStorage.getItem('favorites')) || {};
+        let favorites = getFavorites();
 
         function isFavorite(placeId) {
             return favorites.hasOwnProperty(placeId);
+        }
+
+        function saveFavorites(favorites) {
+            localStorage.setItem(userFavoritesKey, JSON.stringify(favorites));
         }
 
         function toggleFavorite(placeId, name) {
@@ -617,7 +633,7 @@
             } else {
                 favorites[placeId] = name;
             }
-            localStorage.setItem('favorites', JSON.stringify(favorites));
+            saveFavorites(favorites)
             updateFavoritesList();
             updateInfoWindowContent(placeId);
         }
@@ -634,11 +650,6 @@
                 `;
                 favoritesList.appendChild(item);
             }
-        }
-
-        function updateInfoWindowContent(placeId) {
-            // This function should update the content of the open info window
-            // You'll need to keep track of the currently open info window and its associated place
         }
 
         // Sidebar toggle
