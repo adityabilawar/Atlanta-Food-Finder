@@ -29,40 +29,7 @@
             margin: 0;
             font-size: 2.5em;
         }
-
-        /* Style for the login form */
-        #login-form {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        #login-form input[type="text"],
-        #login-form input[type="password"] {
-            padding: 5px;
-            margin-bottom: 5px; /* Space between the input fields */
-            font-size: 1em;
-            width: 150px; /* Adjust width as needed */
-        }
-
-        #login-form button {
-            padding: 5px 10px;
-            background-color: gold;
-            border: none;
-            font-size: 1em;
-            cursor: pointer;
-            width: 160px; /* Match button width with input fields */
-        }
-
-        #login-form p {
-            margin: 10px 0 0;
-            font-size: 0.9em;
-            color: #fff;
-        }
-
+        
         #login-form a {
             color: gold;
             text-decoration: none;
@@ -133,6 +100,7 @@
             background-color: #333;
             color: white;
         }
+
         #sidebar {
             position: fixed;
             top: 0;
@@ -144,19 +112,117 @@
             overflow-y: auto;
             z-index: 1000;
         }
+
         #sidebar.open {
             right: 0;
         }
+
         #sidebar-toggle {
             position: fixed;
             top: 10px;
             right: 10px;
             z-index: 1001;
         }
+
         .favorite-item {
             padding: 10px;
             border-bottom: 1px solid #ddd;
         }
+
+        <
+        !
+        DOCTYPE
+        html
+        >
+        <
+        html
+        lang
+        =
+        "en"
+        >
+        <
+        head
+        >
+        <!--
+        .
+        .
+        .
+        (
+        keep
+        existing
+        head
+        content
+        )
+        .
+        .
+        .
+        -->
+        <
+        style
+        >
+        /* ... (keep existing styles) ... */
+
+        /* Update header styles to use flexbox */
+        header
+        {
+            display: flex
+        ;
+            flex-direction: column
+        ;
+            align-items: center
+        ;
+            background-color: #333
+        ;
+            color: white
+        ;
+            padding: 20px
+        ;
+        }
+
+        /* Update login form styles */
+        #login-form {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        #login-inputs {
+            display: flex;
+            align-items: center;
+        }
+
+        #login-form input[type="text"],
+        #login-form input[type="password"] {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 1em;
+            width: 150px;
+        }
+
+        #login-form button {
+            padding: 5px 10px;
+            background-color: gold;
+            border: none;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        #login-form p {
+            margin-left: 10px;
+        }
+
+        /* Update user info styles */
+        #user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        #user-info button {
+            margin-left: 10px;
+        }
+
+
     </style>
     <meta name="google-signin-client_id" content="659442380795-0pkepjreldf5dhjml3l1qpot25bmko5r.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
