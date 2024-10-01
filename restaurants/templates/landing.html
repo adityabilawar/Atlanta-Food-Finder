@@ -226,12 +226,14 @@
         document.getElementById('login-inputs').style.display = 'none';
         document.getElementById('user-info').style.display = 'block';
         document.getElementById('user-name').textContent = username;
+        document.getElementById('sidebar-toggle').style.display = 'block'; // Show Favorites button
     }
 
     function logout() {
         localStorage.removeItem('user');
         document.getElementById('login-inputs').style.display = 'block';
         document.getElementById('user-info').style.display = 'none';
+        document.getElementById('sidebar-toggle').style.display = 'none'; // Hide Favorites button
         // You may want to send a logout request to the server here
     }
 
@@ -240,6 +242,8 @@
         const user = JSON.parse(localStorage.getItem('user'));
         if (user) {
             updateUIForLoggedInUser(user.username);
+        } else {
+            document.getElementById('sidebar-toggle').style.display = 'none'; // Ensure it's hidden if not logged in
         }
     }
 
@@ -259,6 +263,7 @@
         return cookieValue;
     }
 </script>
+
 
 
         <!-- Restaurant Search Form and Filters in the Top Left -->
