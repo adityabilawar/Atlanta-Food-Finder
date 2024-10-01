@@ -4,7 +4,8 @@
 # from rest_framework.response import Response
 # from .models import Restaurant, Favorite
 # from .serializers import RestaurantSerializer, FavoriteSerializer
-# from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout
+from rest_framework.permissions import IsAuthenticated
 # import json
 # from django.http import JsonResponse
 
@@ -89,25 +90,26 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'cuisine_type', 'address']
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def add_favorite(self, request, pk=None):
         restaurant = self.get_object()
         favorite, created = Favorite.objects.get_or_create(user=request.user, restaurant=restaurant)
         if created:
-            return Response({"message": "Added to favorites"}, status=201)
-        return Response({"message": "Already in favorites"}, status=200)
+            return Response({"message": "Added to favorites"}, status=status.HTTP_201_CREATED)
+        return Response({"message": "Already in favorites"}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def remove_favorite(self, request, pk=None):
         restaurant = self.get_object()
         favorite = Favorite.objects.filter(user=request.user, restaurant=restaurant).first()
         if favorite:
             favorite.delete()
-            return Response({"message": "Removed from favorites"}, status=200)
-        return Response({"message": "Not in favorites"}, status=404)
+            return Response({"message": "Removed from favorites"}, status=status.HTTP_200_OK)
+        return Response({"message": "Not in favorites"}, status=status.HTTP_404_NOT_FOUND)
 
 class FavoriteViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FavoriteSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Favorite.objects.filter(user=self.request.user)

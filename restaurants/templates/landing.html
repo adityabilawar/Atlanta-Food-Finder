@@ -133,6 +133,30 @@
             background-color: #333;
             color: white;
         }
+        #sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: #f4f4f4;
+            transition: right 0.3s;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        #sidebar.open {
+            right: 0;
+        }
+        #sidebar-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
+        }
+        .favorite-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
     </style>
     <meta name="google-signin-client_id" content="659442380795-0pkepjreldf5dhjml3l1qpot25bmko5r.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
@@ -268,6 +292,17 @@
 
     </header>
 
+
+     <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle">Favorites</button>
+
+    <!-- Favorites Sidebar -->
+    <div id="sidebar">
+        <h2>Your Favorites</h2>
+        <div id="favorites-list"></div>
+    </div>
+
+
     <!-- Map Section -->
     <div id="map"></div>
     <div id="status">Finding nearby restaurants...</div>
@@ -393,17 +428,20 @@
                         : '';
 
                     const contentString = `
-                        <strong>${details.name}</strong><br>
-                        Rating: ${starRating} (${rating})<br>
-                        ${distance}
-                        Address: ${details.formatted_address || 'N/A'}<br>
-                        Phone: ${details.formatted_phone_number || 'N/A'}<br>
-                        Cuisine: ${cuisine}<br>
-                        ${photoUrl ? `<img src="${photoUrl}" alt="${details.name}" style="max-width:100%; height:auto;"><br>` : ''}
-                        <a href="${details.url}" target="_blank">Google Reviews</a><br>
-{#                        <a href="https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${place.geometry.location.lat()},${place.geometry.location.lng()}" target="_blank">Get Directions</a>#}
-                        ${directionsLink}
-                    `;
+                <strong>${details.name}</strong><br>
+                Rating: ${starRating} (${rating})<br>
+                ${distance}
+                Address: ${details.formatted_address || 'N/A'}<br>
+                Phone: ${details.formatted_phone_number || 'N/A'}<br>
+                Cuisine: ${cuisine}<br>
+                ${photoUrl ? `<img src="${photoUrl}" alt="${details.name}" style="max-width:100%; height:auto;"><br>` : ''}
+                <a href="${details.url}" target="_blank">Google Reviews</a><br>
+                ${directionsLink}<br>
+                <button onclick="toggleFavorite('${place.place_id}', '${details.name}')">
+                    ${isFavorite(place.place_id) ? 'Remove from Favorites' : 'Add to Favorites'}
+                </button>
+            `;
+
 
                     // Add click listener to show restaurant info when marker is clicked
                     google.maps.event.addListener(marker, 'click', function() {
@@ -560,6 +598,51 @@
             }
             markers = [];
         }
+
+        // Favorites functionality
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || {};
+
+        function isFavorite(placeId) {
+            return favorites.hasOwnProperty(placeId);
+        }
+
+        function toggleFavorite(placeId, name) {
+            if (isFavorite(placeId)) {
+                delete favorites[placeId];
+            } else {
+                favorites[placeId] = name;
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateFavoritesList();
+            updateInfoWindowContent(placeId);
+        }
+
+        function updateFavoritesList() {
+            const favoritesList = document.getElementById('favorites-list');
+            favoritesList.innerHTML = '';
+            for (const [placeId, name] of Object.entries(favorites)) {
+                const item = document.createElement('div');
+                item.className = 'favorite-item';
+                item.innerHTML = `
+                    <span>${name}</span>
+                    <button onclick="toggleFavorite('${placeId}', '${name}')">Remove</button>
+                `;
+                favoritesList.appendChild(item);
+            }
+        }
+
+        function updateInfoWindowContent(placeId) {
+            // This function should update the content of the open info window
+            // You'll need to keep track of the currently open info window and its associated place
+        }
+
+        // Sidebar toggle
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // Initialize favorites list
+        updateFavoritesList();
     </script>
 
     <!-- Load the Google Maps API and Places API -->
