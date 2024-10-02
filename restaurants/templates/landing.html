@@ -39,15 +39,9 @@
             text-decoration: underline;
         }
 
-        /* Style for the search form and filters */
-        #search-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
 
         #search-form {
-            display: flex;
+            display: inline-block;
             align-items: center;
             margin-bottom: 10px;
         }
@@ -68,8 +62,9 @@
         }
 
         #filter-options {
-            display: flex;
+            display: inline-block;
             align-items: center;
+            padding: 5px 10px;
         }
 
         #filter-options label {
@@ -182,8 +177,9 @@
         /* Update login form styles */
         #login-form {
             width: 100%;
-            display: flex;
-            justify-content: flex-end;
+            position: absolute;
+            left: 20px;
+            top: 10px;
             margin-bottom: 20px;
         }
 
@@ -222,6 +218,24 @@
             margin-left: 10px;
         }
 
+        #all-header {
+            display: flex;
+            align-items: center; /* Vertically centers items within the header */
+            justify-content: center; /* Space between the left and center elements */
+            position: relative;
+            width: 100%;
+        }
+
+
+        #header-and-search {
+            z-index: 1;
+            display: flex;
+            flex-direction: column; /* Keeps the header and search vertically stacked */
+            text-align: center; /* Centers the text inside the #header-and-search */
+            justify-content: center;
+            flex-grow: 1; /* Allows it to take up the remaining space */
+        }
+
 
     </style>
     <meta name="google-signin-client_id" content="659442380795-0pkepjreldf5dhjml3l1qpot25bmko5r.apps.googleusercontent.com">
@@ -231,11 +245,8 @@
     <link href="../static/login.css" type="text/css" rel="stylesheet">
     <!-- Header Section -->
     <header>
-        <h1>Atlanta Food Finder</h1>
-        <p>Discover new tastes or cozy up with an old favorite!</p>
-
-<!-- Login Form in the Top Right -->
-<div id="login-form">
+        <div id="all-header">
+                    <div id="login-form">
     <div id="login-inputs">
         <input type="text" placeholder="Username" id="username">
         <input type="password" placeholder="Password" id="password">
@@ -247,6 +258,42 @@
         <button onclick="logout()">Logout</button>
     </div>
 </div>
+        <div id="header-and-search">
+            <h1>Atlanta Food Finder</h1>
+        <p>Discover new tastes or cozy up with an old favorite!</p>
+        <div id="search-container">
+            <div id="filter-options">
+        <div class="filter-option">
+            <label for="rating-filter" style="color: #FFD700;">Rating:</label>
+            <select id="rating-filter">
+                <option value="0">Any</option>
+                <option value="3">3+ stars</option>
+                <option value="4">4+ stars</option>
+                <option value="4.5">4.5+ stars</option>
+            </select>
+        </div>
+        <div class="filter-option">
+            <label for="distance-filter" style="color: #FFD700;">Distance:</label>
+            <select id="distance-filter">
+                <option value="0">Any</option>
+                <option value="1000">1 km</option>
+                <option value="5000">5 km</option>
+                <option value="10000">10 km</option>
+                <option value="20000">20 km</option>
+            </select>
+        </div>
+    </div>
+    <form id="search-form" onsubmit="searchRestaurants(event)">
+        <input type="text" id="search-input" name="search_query" placeholder="Search Restaurants">
+        <button type="submit">Search</button>
+    </form>
+
+</div>
+        </div>
+        </div>
+
+
+
 
  <script>
     async function login() {
@@ -350,33 +397,6 @@
 
 
         <!-- Restaurant Search Form and Filters in the Top Left -->
-<div id="search-container">
-    <form id="search-form" onsubmit="searchRestaurants(event)">
-        <input type="text" id="search-input" name="search_query" placeholder="Search Restaurants">
-        <button type="submit">Search</button>
-    </form>
-    <div id="filter-options">
-        <div class="filter-option">
-            <label for="rating-filter">Rating:</label>
-            <select id="rating-filter">
-                <option value="0">Any</option>
-                <option value="3">3+ stars</option>
-                <option value="4">4+ stars</option>
-                <option value="4.5">4.5+ stars</option>
-            </select>
-        </div>
-        <div class="filter-option">
-            <label for="distance-filter">Distance:</label>
-            <select id="distance-filter">
-                <option value="0">Any</option>
-                <option value="1000">1 km</option>
-                <option value="5000">5 km</option>
-                <option value="10000">10 km</option>
-                <option value="20000">20 km</option>
-            </select>
-        </div>
-    </div>
-</div>
 
     </header>
 
