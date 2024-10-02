@@ -706,17 +706,25 @@
 
         function updateFavoritesList() {
             const favoritesList = document.getElementById('favorites-list');
-            favoritesList.innerHTML = '';
+            favoritesList.innerHTML = ''; // Clear existing favorites
+
             for (const [placeId, name] of Object.entries(favorites)) {
                 const item = document.createElement('div');
                 item.className = 'favorite-item';
+
+                // Create a Google Places URL using the placeId
+                const placeLink = `https://www.google.com/maps/place/?q=place_id:${placeId}`;
+
+                // Add a link to the placeId and a remove button
                 item.innerHTML = `
-                    <span>${name}</span>
+                    <a href="${placeLink}" target="_blank">${name}</a>
                     <button onclick="toggleFavorite('${placeId}', '${name}')">Remove</button>
                 `;
+
                 favoritesList.appendChild(item);
             }
         }
+
 
         // Sidebar toggle
         document.getElementById('sidebar-toggle').addEventListener('click', function() {
